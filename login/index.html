@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="./style.css">
+    <script type="text/javascript" src="../js/jquery-1.4.2.min.js"></script>
+
+</head>
+
+<body>
+    <!-- partial:index.partial.html -->
+    <div id="bg"></div>
+
+    <form>
+        <div class="form-field">
+            <input id="email" placeholder="Email / Username" required/>
+        </div>
+
+        <div class="form-field">
+            <input type="password" id="password" placeholder="Password" required/> </div>
+
+        <div class="form-field">
+            <a class="btn" onclick="login()">Log in</a>
+        </div>
+    </form>
+    <!-- partial -->
+
+    <script>
+        function login() {
+            var username = document.getElementById('email').value;
+            var Password = document.getElementById('password').value;
+            console.log('Email == ' + username);
+            console.log('Password == ' + Password);
+            api_key = "68F9B4619398DAA3C41A7D0DF1342B81"
+
+            // alert("Are you sure!!!!!!!!!!!!!!!!!!!!")
+            $.ajax({
+                type: "POST",
+                url: "../user.php",
+                data: {
+                    api_key: api_key,
+                    username: username,
+                    password: Password
+                },
+                dataType: "json", //expect json to be returned                
+                success: function(response) {
+                    ress = JSON.stringify(response);
+                    res = JSON.parse(ress);
+                    console.log(res);
+                    status = res['status'];
+                    console.log(status);
+                    payload = res['arrayUser'];
+
+                    switch (status) {
+
+                        case '0':
+                            alert(message);
+                            $(".buttonRegister").html('Try Again?');
+                            $(".buttonRegister").removeAttr('disabled');
+                            break;
+                        case '200':
+                            if (payload['id'] == 1) {
+                                window.location = '../favorite/index.html';
+                            }
+
+                            break;
+                        case '404':
+                            console.log("Page Not found");
+
+                        default:
+                            alert('An unknown error occured');
+                            $(".buttonRegister").html('Try Again?');
+                            $(".buttonRegister").removeAttr('disabled');
+                            console.log(message);
+                            break;
+                    }
+
+
+
+                },
+                error: function(jqXHR, exception) {
+                    console.error('AJAX responded with error code: ' + jqXHR.status + ' when it tried to send the email');
+                    console.error(jqXHR);
+                    $(".btn").html('Try Again?');
+                    $(".btn").removeAttr('disabled');
+                    alert('There was an error processing this request. Please try again later.');
+
+                },
+                timeout: 10000
+            });
+
+
+        }
+    </script>
+
+</body>
+
+</html>

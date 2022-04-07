@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC >
+<html>
+
+<head>
+    <title>Aglet Movies</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="all" />
+    <script type="text/javascript" src="../js/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-func.js"></script>
+    <!--[if IE 6]><link rel="stylesheet" href="css/ie6.css" type="text/css" media="all" /><![endif]-->
+</head>
+
+<body>
+    <!-- START PAGE SOURCE -->
+    <div id="shell">
+        <div id="header">
+            <!-- <h1 id="logo"><a href="#">Aglet Movies</a></h1> -->
+            <div class="social"> <span>FOLLOW US ON:</span>
+                <ul>
+                    <li><a class="twitter" href="https://twitter.com/home?lang=en">twitter</a></li>
+                    <li><a class="facebook" href="https://www.facebook.com/mpofunkue">facebook</a></li>
+                
+                </ul>
+            </div>
+            <div id="navigation">
+                <ul>
+                    <li><a class="active" href="../">HOME</a></li>
+                    <li><a href="../contactt/index.html">CONTACT</a></li>
+                    <li><a href="../login/">LOGOUT</a></li>
+                </ul>
+            </div>
+            <div id="sub-navigation">
+            </div>
+        </div>
+        <div id="main">
+            <div id="content">
+                <div class="box">
+                    <div class="head">
+                        <h2>Favorite Movies</h2>
+                        <p class="text-right"><a href="#">See all</a></p>
+                    </div>
+                    <div id="dynamic-div">
+
+                    </div>
+                    <div class="cl">&nbsp;</div>
+                </div>
+
+
+            </div>
+
+            <div class="cl">&nbsp;</div>
+        </div>
+        <div id="footer">
+            <p class="lf">Copyright &copy; 2022 <a href="https://aglet.co.za/">AGLET MOVIEDB</a> - All Rights Reserved</p>
+            <p class="rf">Design by <a href="">Nkululeko Mpofu</a></p>
+            <div style="clear:both;"></div>
+        </div>
+    </div>
+    <!-- END PAGE SOURCE -->
+    <script>
+        $(document).ready(function() {
+
+            var api_key = "68F9B4619398DAA3C41A7D0DF1342B81";
+            $.ajax({
+                type: "POST",
+                url: "../getmovies.php",
+                data: {
+                    api_key: api_key
+                },
+                dataType: "json", //expect json to be returned 
+                success: function(response) {
+                    ress = JSON.stringify(response);
+                    res = JSON.parse(ress);
+                    status = res['status'];
+                    payload = res['arrayMovies'];
+
+                    console.log(payload);
+                    //username = res['username'];
+
+                    switch (status) {
+
+                        case '200':
+                            payload.forEach(function(details) {
+                                var original_title = details['original_title'];
+                                var poster_path = details['poster_path'];
+                                var release_date = details['release_date'];
+
+                                var button_name = "Add Favourite"
+
+                                var row = "<div class='movie'>" +
+                                    "<div class='movie-image'> <span class='play'><span class='name'>" + original_title + "</span></span><a href='#'><img src='" + poster_path + "' alt='' /></a></div>" +
+                                    "<div class='rating'><p>" + original_title + "</p><br><p> Released on <span>" + release_date + "</span> </p> <br>" +
+                                    "</div>";
+                                $('#dynamic-div').append(row);
+                                // $('#dynamic-table').append(row1);
+
+                            })
+                            break;
+                        case '401':
+                            alert(message);
+                            $(".buttonVerify").html('Try Again?');
+                            $(".buttonVerify").removeAttr('disabled');
+                            alert(message);
+                            window.location = './account_authentication.html';
+                            console.log(message);
+                            break;
+
+                        default:
+                            alert('An unknown error occured');
+                            $(".buttonVerify").html('Try Again?');
+                            $(".buttonVerify").removeAttr('disabled');
+                            console.log(message);
+                            break;
+                    }
+
+
+
+                }
+            });
+            // $('#dynamic-table').DataTable({
+            //                            "pagingType": "full_numbers"
+            //                        });
+
+        });
+    </script>
+</body>
+
+</html>
